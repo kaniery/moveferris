@@ -1,5 +1,6 @@
 use std::thread;
 use std::time::Duration;
+use clearscreen::clear;
 
 fn main() {
     // 2フレームを用意して、下部の1箇所を切り替えることで足を動かす
@@ -40,7 +41,7 @@ fn main() {
     let frames = ferris_frames.len();
     for i in 0..40 {
         // 1. 画面をクリア
-        print!("{}[2J{}[H", 27 as char, 27 as char);
+        clear().unwrap();
 
         // 2. 左にスペースを入れて位置をずらす（戻りも可能）
         let indent: String = " ".repeat(i % 20);
