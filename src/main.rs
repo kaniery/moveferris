@@ -6,6 +6,21 @@ fn main() {
     // 2フレームを用意して、下部の1箇所を切り替えることで足を動かす
     let ferris_frames: [&str; 2] = [
         r#"                                                  
+                 .:.:.:.:.:..;.;.                                 
+              .-.:RRRRRRRRRRRRRRRR=::     ..     
+      .     ::-RRRRRRRRRRRRRRRRRRRRR-:: .:R:      . 
+:.   ;R.   +RRRRRRRRRRRRRRRRRRRRRRRRR-  -RR-    :R 
+*R-=RR= .=RRRRRRRR R@RRRRR R@RRRRRRRRR-  -RRRRR- 
+  -RRRR ===RRRRRRR1  @#RRR1  @#RRRRRRRR==:.RR-   
+   :RR.:RRRRRRRRR@_%@#RRR@_%@#RRRRRRRRRRR=R-     
+      .RRRRRRRRRRRRR@RRRRRRR@RRRRRRRRRRRRRR-      
+     ++RRRRRRRRRRRRRR@._.@RRRRRRRRRRRRRR.*RR=     
+       -+R.* .RRRRRRRRRRRRRRRRRRRR.   :R R:       
+     .:R                                 .=.        
+    .:                                      :
+
+    "#,
+        r#"                                                  
                  .:.:.:.:.:..;.;.                                     
               .-.:RRRRRRRRRRRRRRRR=::       ..     
    .        ::-RRRRRRRRRRRRRRRRRRRRR-::  .:R:  . 
@@ -19,22 +34,7 @@ fn main() {
          :R                            .=.        
            :.                          :
 
-    "#,
-        r#"                                                  
-                 .:.:.:.:.:..;.;.                                     
-              .-.:RRRRRRRRRRRRRRRR=::       ..     
-   .        ::-RRRRRRRRRRRRRRRRRRRRR-::  .:R:  . 
-:. ;R.     +RRRRRRRRRRRRRRRRRRRRRRRRR-   -RR-  :R 
-*R-=RR= .=RRRRRRRR R@RRRRR R@RRRRRRRRR-  -RRRRR- 
-  -RRRR ===RRRRRRR1  @#RRR1  @#RRRRRRRR==:.RR-   
-   :RR.:RRRRRRRRR@_%@#RRR@_%@#RRRRRRRRRRR=R-     
-      .RRRRRRRRRRRRR@RRRRRRR@RRRRRRRRRRRRRR-      
-     ++RRRRRRRRRRRRRR@._.@RRRRRRRRRRRRRR.*RR=     
-       -+R.* .RRRRRRRRRRRRRRRRRRRR.   :R R:       
-     .:R                                 .=.        
-    .:                                      :
-
-    "#,
+    "#
     ];
 
     // フレーム数と移動幅を調整
