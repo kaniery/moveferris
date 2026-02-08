@@ -1,46 +1,82 @@
 use std::thread;
 use std::time::Duration;
-use clearscreen::clear;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use std::io::{self, Write};
 
 fn main() {
-    // 2フレームを用意して、下部の1箇所を切り替えることで足を動かす
     let ferris_frames: [&str; 3] = [
-    r#"                                                  
-            _~^~^~_
-        _) /  o o  \ (_
-          '_   -   _'
-          \ '-----' /
-    "#,
-    r#"                                                  
-            _~^~^~_
-        () /  o o  \ ()
-          '_   -   _'
-          | '-----' |        
-    "#,
-    r#"                                                  
-            _~^~^~_
-        \) /  o o  \ (/
-          '_   -   _'
-          / '-----' \         
-    "#
+    r#"        _~^~^~_
+    _) /  o o  \ (_
+      '_   -   _'
+      \ '-----' /"#,
+    r#"        _~^~^~_
+    () /  o o  \ ()
+      '_   -   _'
+      | '-----' |"#,
+    r#"        _~^~^~_
+    \) /  o o  \ (/
+      '_   -   _'
+      / '-----' \"#
     ];
 
-    // フレーム数と移動幅を調整
-    let frames = ferris_frames.len();
-    for i in 0..18 {
-        // 1. 画面をクリア
-        clear().unwrap();
+    // 終了フラグ
+    let running = Arc::new(AtomicBool::new(true));
+    let running_clone = Arc::clone(&running);
 
-        // 2. 左にスペースを入れて位置をずらす（戻りも可能）
-        let indent: String = " ".repeat(i % 20);
+    // Ferrisアニメーション用スレッド（ログに残さない描画）
+    let ferris_thread = thread::spawn(move || {
+        let mut frame_count = 0;
+        // 画面下部の行・列（必要に応じて調整してください）
+        let base_row = 20;
+        let base_col = 60;
 
-        // 今回はフレームを交互に切り替えて足を動かす
-        let frame = ferris_frames[i % frames];
-        for line in frame.lines() {
-            println!("{}\x1b[31m{}\x1b[0m", indent, line);
+        while running_clone.load(Ordering::SeqCst) {
+            let frame = ferris_frames[frame_count % 3];
+
+            // 標準出力に対してカーソル位置を保存して移動、描画後に復帰する
+            // 改行を出力しないためスクロールやログへの追記が発生しない
+            let mut out = io::stdout();
+            // カーソル位置を保存
+            write!(out, "\x1b[s").ok();
+
+            for (idx, line) in frame.lines().enumerate() {
+                // 指定位置に文字列を書き込む（改行しない）
+                write!(out, "\x1b[{};{}H\x1b[31m{}\x1b[0m", base_row + idx, base_col, line).ok();
+            }
+
+            // カーソルを元の位置に戻す
+            write!(out, "\x1b[u").ok();
+            out.flush().ok();
+
+            frame_count += 1;
+            thread::sleep(Duration::from_millis(100));
+        }
+    });
+
+    // メインスレッド：ユーザー入力を受け付ける
+    println!("Ferris がバックグラウンドに常駐しました！");
+    println!("コマンドを入力してください（exit で終了）：");
+    
+    loop {
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+        
+        if input.trim().is_empty() {
+            continue;
         }
 
-        // 3. 少し待機（約10FPS）
-        thread::sleep(Duration::from_millis(100));
+        match input.trim() {
+            "exit" | "quit" => {
+                running.store(false, Ordering::SeqCst);
+                break;
+            }
+            _ => {
+                println!("入力: {}", input.trim());
+            }
+        }
     }
+
+    ferris_thread.join().unwrap();
+    println!("終了しました！");
 }
