@@ -20,14 +20,14 @@ fn main() {
     r#"                                                  
             _~^~^~_
         \) /  o o  \ (/
-          '_   -   _'
+          '_   v   _'
           / '-----' \         
     "#
     ];
 
     // フレーム数と移動幅を調整
     let frames = ferris_frames.len();
-    for i in 0..40 {
+    for i in 0..18 {
         // 1. 画面をクリア
         clear().unwrap();
 
